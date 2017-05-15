@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fidgets</title>
+		<style>
+			.spinner {
+				width: 192px;
+				transform: rotate(45deg);
+			}
+			.movable {
+				position: absolute;
+			}
+			* {
+				font-family: Varela Round;
+				overflow: hidden;
+			}
+			body {
+				background: #049;
+				background-size: 101% 101%;
+				background-repeat: repeat;
+			}
+			#welcome, #controlpanel, .controlpanel{
+				border: double 2px;
+				background: rgba(0,153,255,0.25);
+				width: 30%;
+				padding: 8px;
+			} 
+			.icon {
+				padding: 1px;
+				bottom: 0;
+				width: 42px;
+				height: 42px;
+			}
+			.icon:hover {
+				padding: 0px;
+				border: solid 1px;
+				border-color: rgba(0,0,0,0.2);
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Varela+Round">
+		<script>
+			(function(){window.onload = (function(){
+				var config = {
+					framerate: 50
+				};
+				var FlyingFuck = function(e){
+					this.element = e;
+					this.velX = 0;
+					this.velY = 0;
+					this.cVel = 0.8;
+					this.x = window.innerWidth*0.4;
+					this.y = window.innerHeight*0.4;
+					this.selected = false;
+					this.mouseOffset = {x: 0, y: 0};
+					this.spin = function(e){
+						if(e != null) e.preventDefault();
+						this.velocity+=this.incVel;
+					}
+					this.mousedown = function(e){
+						e.preventDefault();
+						this.selected = true;
+						this.mouseOffset = {x: this.x-e.pageX, y: this.y-e.pageY};
+						this.drag(e);
+					}
+					this.mouseup = function(e){
+						e.preventDefault();
+						this.selected = false;
+						this.mouseOffset = {x: 0, y: 0};
+					}
+					this.drag = function(e){
+						e.preventDefault();
+						if(e.which != 1) return;
+						if(!this.selected) return;
+						this.x = e.pageX-Math.abs(this.mouseOffset.x);
+						this.y = e.pageY-Math.abs(this.mouseOffset.y);
+					}
+					this.update = function(){
+						this.rotation+=this.velocity;
+						if(this.x > window.innerWidth / 2) this.velX -= this.cVel;
+						if(this.x < window.innerWidth / 2) this.velX += this.cVel;
+						if(this.y > window.innerHeight / 2) this.velY -= this.cVel;
+						if(this.y < window.innerHeight / 2) this.velY += this.cVel;
+						this.x+=this.velX;
+						this.y+=this.velY;
+						this.element.style.left="SOMEpx".replace(/SOME/g,this.x);
+						this.element.style.top="SOMEpx".replace(/SOME/g,this.y);
+					};
+					//this.element.addEventListener("click",this.spin.bind(this));
+					this.element.addEventListener("mousemove",this.drag.bind(this));
+					this.element.addEventListener("mousedown",this.mousedown.bind(this));
+					this.element.addEventListener("mouseup",this.mouseup.bind(this));
+					this.element.oncontextmenu = function(e){
+						this.spin();
+						return false;
+					}.bind(this);
+					this.element.addEventListener("dblclick", function(e){
+						this.style.display = "none";
+					}.bind(this.element));
+				};
+				var Spinner = function(e){
+					this.element = e;
+					this.rotation = 0;
+					this.velocity = 0;
+					this.decVel = 0.2;
+					this.incVel = 6;
+					this.size = 512;
+					this.x = 0;
+					this.y = 0;
+					this.selected = false;
+					this.mouseOffset = {x: 0, y: 0};
+					this.spin = function(e){
+						if(e != null) e.preventDefault();
+						this.velocity+=this.incVel;
+					}
+					this.mousedown = function(e){
+						e.preventDefault();
+						this.selected = true;
+						this.mouseOffset = {x: this.x-e.pageX, y: this.y-e.pageY};
+						this.drag(e);
+					}
+					this.mouseup = function(e){
+						e.preventDefault();
+						this.selected = false;
+						this.mouseOffset = {x: 0, y: 0};
+					}
+					this.drag = function(e){
+						e.preventDefault();
+						if(e.which != 1) return;
+						if(!this.selected) return;
+						this.x = e.pageX-Math.abs(this.mouseOffset.x);
+						this.y = e.pageY-Math.abs(this.mouseOffset.y);
+					}
+					this.update = function(){
+						this.rotation+=this.velocity;
+						if(this.velocity>this.decVel) {
+							this.velocity-=this.decVel;
+						} else {
+							this.velocity=0;
+						}
+						this.element.style.transform="rotate(SOMEdeg)".replace(/SOME/g,this.rotation);
+						this.element.style.left="SOMEpx".replace(/SOME/g,this.x);
+						this.element.style.top="SOMEpx".replace(/SOME/g,this.y);
+					};
+					//this.element.addEventListener("click",this.spin.bind(this));
+					this.element.addEventListener("mousemove",this.drag.bind(this));
+					this.element.addEventListener("mousedown",this.mousedown.bind(this));
+					this.element.addEventListener("mouseup",this.mouseup.bind(this));
+					this.element.oncontextmenu = function(e){
+						this.spin();
+						return false;
+					}.bind(this);
+					this.element.addEventListener("dblclick", function(e){
+						this.style.display = "none";
+					}.bind(this.element));
+				};
+				var Game = function(e){
+					this.element = e;
+					this.size = 512;
+					this.x = 0;
+					this.y = 0;
+					this.selected = false;
+					this.mouseOffset = {x: 0, y: 0};
+					this.mousedown = function(e){
+						e.preventDefault();
+						this.selected = true;
+						this.mouseOffset = {x: this.x-e.pageX, y: this.y-e.pageY};
+						this.drag(e);
+					}
+					this.mouseup = function(e){
+						e.preventDefault();
+						this.selected = false;
+						this.mouseOffset = {x: 0, y: 0};
+					}
+					this.drag = function(e){
+						e.preventDefault();
+						if(e.which != 1) return;
+						if(!this.selected) return;
+						this.x = e.pageX-Math.abs(this.mouseOffset.x);
+						this.y = e.pageY-Math.abs(this.mouseOffset.y);
+					}
+					this.update = function(){
+						this.element.style.left="SOMEpx".replace(/SOME/g,this.x);
+						this.element.style.top="SOMEpx".replace(/SOME/g,this.y);
+					};
+					//this.element.addEventListener("click",this.spin.bind(this));
+					this.element.addEventListener("mousemove",this.drag.bind(this));
+					this.element.addEventListener("mousedown",this.mousedown.bind(this));
+					this.element.addEventListener("mouseup",this.mouseup.bind(this));
+					this.element.oncontextmenu = function(e){
+						//this.element.getElementsByTagName("iframe")[0].style.display=this.element.getElementsByTagName("iframe")[0].style.display=="block"?"none":"block"
+						//this.element.style.height=this.element.getElementsByTagName("iframe")[0].style.display=="block"?"280px":"30px"
+						return false;
+					}.bind(this);
+				};
+				var Clock = function(e){
+					this.element = e;
+					this.size = 64;
+					this.x = 0;
+					this.y = 0;
+					this.selected = false;
+					this.mouseOffset = {x: 0, y: 0};
+					this.format = 0;
+					this.formats = [
+						"MM/DD/YY",
+						"hh:mm:ss"
+					];
+					this.changeType = function(e){
+						if(e != null) e.preventDefault();
+						this.format ++;
+					}
+					this.mousedown = function(e){
+						e.preventDefault();
+						this.selected = true;
+						this.mouseOffset = {x: this.x-e.pageX, y: this.y-e.pageY};
+						this.drag(e);
+					}
+					this.mouseup = function(e){
+						e.preventDefault();
+						this.selected = false;
+						this.mouseOffset = {x: 0, y: 0};
+					}
+					this.drag = function(e){
+						e.preventDefault();
+						if(e.which != 1) return;
+						if(!this.selected) return;
+						this.x = e.pageX-Math.abs(this.mouseOffset.x);
+						this.y = e.pageY-Math.abs(this.mouseOffset.y);
+					}
+					this.update = function(){
+						var movable = (' ' + this.element.className + ' ').indexOf(' movable ') > -1;
+						this.element.innerHTML = this.getTime(this.formats[this.format%this.formats.length]);
+						if(movable) this.element.style.fontSize = this.size+"px";
+						if(movable) this.element.style.left="SOMEpx".replace(/SOME/g,this.x);
+						if(movable) this.element.style.top="SOMEpx".replace(/SOME/g,this.y);
+					};
+					this.getTime = function(format){
+						var time = new Date();
+						var month = time.getMonth()+1;
+						var day = time.getDate();
+						var year = time.getFullYear();
+						var hours = time.getHours() % 12;
+						var minutes = time.getMinutes();
+						var seconds = time.getSeconds();
+						if(hours == 0) hours = 12;
+						if(minutes<10) minutes="0"+minutes;
+						if(seconds<10) seconds="0"+seconds;
+						return format.replace(/MM/g,month)
+								.replace(/DD/g,day)
+								.replace(/YY/g,year)
+								.replace(/hh/g,hours)
+								.replace(/mm/g,minutes)
+								.replace(/ss/g,seconds);
+					};
+					//this.element.addEventListener("click",this.spin.bind(this));
+					this.element.addEventListener("mousemove",this.drag.bind(this));
+					this.element.addEventListener("mousedown",this.mousedown.bind(this));
+					this.element.addEventListener("mouseup",this.mouseup.bind(this));
+					this.element.oncontextmenu = function(e){
+						this.changeType();
+						return false;
+					}.bind(this);
+					this.element.addEventListener("dblclick", function(e){
+						var movable = (' ' + this.className + ' ').indexOf(' movable ') > -1;
+						if(movable) this.style.display = "none";
+					}.bind(this.element));
+				};
+				var entities = [];
+				var Draw = function(){
+					for(var s in entities){
+						entities[s].update();
+					}
+					setTimeout(Draw,1000/config.framerate);
+				};
+				var init = function(){
+					var s = document.getElementsByClassName("spinner");
+					var c = document.getElementsByClassName("clock");
+					var g = document.getElementsByClassName("game");
+					var f = document.getElementsByClassName("flyingfuck");
+					for(var e = 0; e < s.length; e++){
+						entities.push(new Spinner(s[e]));
+					};
+					for(var e = 0; e < f.length; e++){
+						entities.push(new FlyingFuck(f[e]));
+					};
+					for(var e = 0; e < c.length; e++){
+						entities.push(new Clock(c[e]));
+					};
+					for(var e = 0; e < g.length; e++){
+						entities.push(new Game(g[e]));
+					};
+					document.addEventListener("mousemove",function(e){
+						for(var s in entities){
+							entities[s].drag(e);
+						}
+					});
+					document.addEventListener("mouseup",function(e){
+						for(var s in entities){
+							entities[s].mouseup(e);
+						}
+					});
+					document.getElementById("msn").src = "http://www.msnbc.com"
+					document.getElementById("kart").src = "http://www.mazeware.com/games/html5/m7/supercanvaskart.html"
+					document.getElementById("chessdb").src = "https://chess-db.com/tactics/embedtactics.jsp"
+					document.getElementById("b_ar").src="https://johnj1101.github.io/abbey-road/test.html"
+					//document.getElementById("gmail").src="https://outlook.com"
+					document.getElementById("b_lib").src="https://johnj1101.github.io/let-it-be/test2.html"
+					Draw();
+				};
+				init();
+			})})();
+		</script>
+	</head>
+	<body>
+	
+		<div class='game movable' id='welcome'>
+			<center><h2>Welcome to jjOS v1.0!</h2>We thank you for taking the time to try out jjOS, and we hope you enjoy it. It is (very!) lightweight, and should have no slowdowns.<br/><br/>Report any issues to us at iPG1101@outlook.com. Thanks!<br/>-Lazy.DevTeam<br/><br/><button onclick="document.getElementById('welcome').style.display='none'">Close</button><br/></center>
+		</div>
+		
+		<div class='game movable' id='controlpanel' style='display: none'>
+			<center>
+			<br/>
+			<h2>Control Panel</h2>
+			<button onclick='document.getElementById("controlpanel_background").style.display = "block";document.getElementById("controlpanel").style.display = "none";'>Desktop Wallpaper</button>
+			<br/>
+			<button onclick='document.getElementById("controlpanel_fspin").style.display = "block";document.getElementById("controlpanel").style.display = "none";'>Fidget Spinner</button>
+			<br/>
+			<!--button onclick='document.getElementById("controlpanel_background").style.display = "block";document.getElementById("controlpanel").style.display = "none";'></button-->
+			<br/><br/><button onclick="document.getElementById('controlpanel').style.display='none'">Close</button><br/>
+			</center>
+		</div>
+		<div class='game movable controlpanel' id='controlpanel_background' style='display: none'>
+			<center>
+			<h2>Desktop Wallpaper</h2>
+			<br/>
+			<img src="wallpaper1.png" width=96 onclick="document.body.style.background='url('+this.src+')'"></img>
+			<img src="wallpaper2.png" width=96 onclick="document.body.style.background='url('+this.src+')'"></img>
+			<img src="wallpaper3.jpg" width=96 onclick="document.body.style.background='url('+this.src+')'"></img>
+			<img src="wallpaper4.jpg" width=96 onclick="document.body.style.background='url('+this.src+')'"></img>
+			<img src="wallpaper5.jpg" width=96 onclick="document.body.style.background='url('+this.src+')'"></img>
+			<br/><br/>
+			<img src="" height=54 width=96 alt="Preview will appear here" id="wpdp" onclick="document.body.style.background='url(a)'.replace('a',this.src);"></img>
+			<br/><input type="file" style='display: none' id='wpufcpdw' onchange='var r=new FileReader();r.readAsDataURL(this.files[0]);r.onload=function(e){document.getElementById("wpdp").src=e.target.result;document.getElementById("wpdp").style.backgroundSize="cover"}' accepts=".png"></input>
+			<button onclick='document.getElementById("wpufcpdw").click()'>Custom</button>
+			<br/>
+			<br/><button onclick="document.getElementById('controlpanel_background').style.display='none'">Close</button><br/>
+			</center>
+		</div>
+		<div class='game movable controlpanel' id='controlpanel_fspin' style='display: none'>
+			<center>
+			<h2>Fidget Spinner</h2>
+			<br/>
+			<img src="fidget2.png" width=96 onclick="document.getElementById('fidget2').src=this.src;document.getElementById('f2i').src=this.src"></img>
+			<img src="pink.png" width=96 onclick="document.getElementById('fidget2').src=this.src;document.getElementById('f2i').src=this.src"></img>
+			<img src="red.png" width=96 onclick="document.getElementById('fidget2').src=this.src;document.getElementById('f2i').src=this.src"></img>
+			<br/><br/>
+			<br/><input type="file" style='display: none' id='fpufcpdw' onchange='var r=new FileReader();r.readAsDataURL(this.files[0]);r.onload=function(e){document.getElementById("fidget2").src=e.target.result;document.getElementById("f2i").src=""+e.target.result+""}' accepts=".png"></input>
+			<button onclick='document.getElementById("fpufcpdw").click()'>Custom</button>
+			<br/><br/><br/><button onclick="document.getElementById('controlpanel_fspin').style.display='none'">Close</button><br/>
+			</center>
+		</div>
+		
+		<div class='game movable' id='news' style='background: #09F; display: none'>
+			<b>News: MSNBC</b><b onclick="document.getElementById('news').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe id='msn' width=380 height=320></iframe>
+		</div>
+		<!-- <div class='game movable' id='email' style='background: #09F; display: none'>
+			<b>News: MSNBC</b><b onclick="document.getElementById('email').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe id='gmail' width=620 height=360></iframe>
+		</div> -->
+		
+		<div class='game movable' id='web' style='background: #09F; display: none'>
+			<b>Web: jExplorer <a onclick='document.getElementById("bing").src="http://bing.com"'>&#127968;</a></b><b onclick="document.getElementById('web').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe style='background-image: url(err.png); background-size: 100%' id="bing" src="http://www.bing.com" width=580 height=420></iframe>
+		</div>
+		
+		<div class='game movable' id='cclick' style='background: #09F; display: none'>
+			<b>Cookie Clicker</b><b onclick="document.getElementById('cclick').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe style='background-image: url(err.png); background-size: 100%' src="http://iphoneguy1101.github.io/CookieClicker/Clicker.html" width=580 height=420></iframe>
+		</div>
+		
+		<div class='game movable' id='music1' style='background: #09F; display: none'>
+			<b>Music: Let it Be</b><b onclick="document.getElementById('music1').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe id='b_lib' style='background-image: url(err.png); background-size: 100%' width=420 height=320></iframe>
+		</div>
+		<div class='game movable' id='music2' style='background: #09F; display: none'>
+			<b>Music: Abbey Road</b><b onclick="document.getElementById('music2').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe id='b_ar' style='background-image: url(err.png); background-size: 100%' width=420 height=320></iframe>
+		</div>
+		
+		<div class='flyingfuck movable' id='flyingfuck' style='width: 96px; height: 96px; background: url(flyingfuck.png); background-size: 96px 96px; display: none' onclick="this.style.display='none'"></div>
+		
+		<div id='chesscontainer' class='movable game' style='background: #09F; width: 250px; height: 280px; display: none'>
+			<b>Chess Puzzles &#9812;</b><b onclick="document.getElementById('chesscontainer').style.display='none';" style='position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<iframe allowtransparency='no' id='chessdb' style='background: #0F9; display: block' scrolling='no' width='250px' height='250px'></iframe>
+		</div>
+		
+		<div id='mario' class='movable game' style='background: #09F; display: none'>
+			<b>Mario Kart</b><b onclick="document.getElementById('mario').style.display='none';" style='overflow: hidden;height: 300px;position: absolute; right: 4px; top: 4px'>x</b><br/><br/>
+			<embed id='kart' style="width: 400px; height: 400px;" ></embed>
+		</div>
+		
+		<img style='display: none' class="spinner movable" id='fidget1' src="fidget1.png"></img>
+		
+		<img style='display: none' class="spinner movable" id='fidget2' src="fidget2.png"></img>
+		
+		<h2 id='timeclock' style='display: none' class="clock movable">TIME</h2>
+		
+		<span style='position:absolute;bottom:4px;width:98%;height:46px;overflow:hidden;border: double 6px black;font-size: 32px'>
+			<a onclick="document.getElementById('chesscontainer').style.display='block';">
+				<img class='icon' title="Chess Puzzles" src='chess.png'></img>
+			</a>
+			<a onclick="document.getElementById('news').style.display='block';">
+				<img class='icon' title="MSNBC News" src='news.png'></img>
+			</a><!-- 
+			<a onclick="document.getElementById('email').style.display='block';">
+				<img class='icon' title="eMail" src='email.png'></img>
+			</a> -->
+			<a onclick="document.getElementById('web').style.display='block';">
+				<img class='icon' title="jExplorer Internet Browser" src='web.ico'></img>
+			</a>
+			<a onclick="document.getElementById('music1').style.display='block';">
+				<img class='icon' title="Music - Let it Be (Beatles)" src='http://johnj1101.github.io/let-it-be/let-it-be-icon.jpg'></img>
+			</a>
+			<a onclick="document.getElementById('music2').style.display='block';">
+				<img class='icon' title="Music - Abbey Road (Beatles)" src='http://johnj1101.github.io/abbey-road/abbey-road-icon.jpg'></img>
+			</a>
+			<a onclick="document.getElementById('cclick').style.display='block';">
+				<img class='icon' title="Cookie Clicker" src='https://iphoneguy1101.github.io/CookieClicker/images/cookie.png'></img>
+			</a>
+			<a onclick="document.getElementById('fidget1').style.display='block';">
+				<img class='icon' title="Fidget Spinner (Black)" src='fidget1.png'></img>
+			</a>
+			<a onclick="document.getElementById('fidget2').style.display='block';">
+				<img class='icon' title="Fidget Spinner (Configurable)" id='f2i' src='fidget2.png'></img>
+			</a>
+			<a onclick="document.getElementById('mario').style.display='block';">
+				<img class='icon' title="Mario Kart" src='mario.png'></img>
+			</a>
+			<a onclick="document.getElementById('flyingfuck').style.display='block';">
+				<img class='icon' title="Flying Fuck" src='flyingfuck.png'></img>
+			</a>
+			<a onclick="document.getElementById('controlpanel').style.display='block';">
+				<img class='icon' title="Settings" src='settings.ico'></img>
+			</a>
+			<a onclick="document.getElementById('timeclock').style.display='block';" class='clock' style='position:absolute;font-size:32px;right:0'>hh:mm:ss</a>
+		</span>
+	</body>
+</html>
